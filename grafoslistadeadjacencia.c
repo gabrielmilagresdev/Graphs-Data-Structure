@@ -35,9 +35,17 @@ bool arestaExiste(VERTICE *g, int v1, int v2){
     return FALSE;
 }
 
+//Função para adicionar uma relação
 bool inserirAresta(VERTICE* g, int v1, int v2){
-
+    if(arestaExiste(g, v1, v2)) //Se a aresta já existe
+        return FALSE;
+    No* novo = (No*)malloc(sizeof(No)); //Cria uma nova aresta para ligar os vértices
+    novo->adj = v2; //Adiciona o valor de v2 como adjacente a aresta
+    novo->prox = g[v1].inicio //Coloca que o novo vértice irá apontar para o que o primeiro vértice estava apontando
+    g[v1].inicio = novo; //Define o novo inicio sendo a nova aresta adicionada
+    return TRUE;
 }
+
 int main(){
     int v; //Número de vértices do grafo
     scanf("%d", &v);
