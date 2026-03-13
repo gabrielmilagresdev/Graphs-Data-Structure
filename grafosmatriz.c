@@ -17,6 +17,7 @@ typedef struct{
     int flag;
 }VERTICE;
 
+    
 //Função para imprimir um grafo em lista de adjacência (Para a função de conversão entre as estruturas)
 void imprimirGrafoLA(VERTICE *g, int v){
     No* p;
@@ -115,9 +116,39 @@ VERTICE* matrizParaLista(int **m, int v){
     return g;
 }
 
+//Função para zerar as flags antes da busca em profundidade
+void zerarFlags(int* vetorFlags, int v){
+    if(!vetorFlags)
+        return;
+    for(int i = 0; i < v; i++){
+        vetorFlags[i] = 0;
+    }
+}
+
+//Função para imprimir as flags 
+void imprimirFlags(int* vetorFlags, int v){
+    if(!vetorFlags)
+        return;
+    for(int i = 0; i < v; i++){
+        printf("G[%d] : %d\n",i,vetorFlags[i]);
+    }
+}
+
+//Função para fazer uma busca em profundidade em um grafo em matriz a partir de um vértice "a"
+Bool prof(int**m, int v, int a, int* vetorFlags){
+    if(!m || !vetorFlags || vetorFlags[a] != 0)
+        return FALSE;
+    vetorFlags[a] = 1;
+    for(int i = 0; i < v; i++){
+        if(m[a][i] != 0 && vetorFlags[i] == 0)
+            prof(m,v,i,vetorFlags);
+    }
+    return TRUE;
+}
+
 int main(){
     //Tamanho da matriz quadrada
-    int v = 5;
+    int v = 8;
 
     //Alocando a matriz
     int** m = (int**) malloc(v * sizeof(int*));
@@ -126,11 +157,16 @@ int main(){
     }
 
     inicializar(m,v);
-    inserirAresta(m,v,1,3);
-    inserirAresta(m,v,0,1);
-    inserirAresta(m,v,2,2);
-    inserirAresta(m,v,3,2);
-    imprimirGrafo(m,v);
+    inserirAresta(m,v, 0 , 1);
+    inserirAresta(m,v, 0 , 3);
+    inserirAresta(m,v, 1 , 3);
+    inserirAresta(m,v, 2 , 3);
+    inserirAresta(m,v, 2 , 1);
+    inserirAresta(m,v, 2 , 7);
+    inserirAresta(m,v, 3 , 4);
+    inserirAresta(m,v, 4 , 2);
+    inserirAresta(m,v, 5 , 6);
+    inserirAresta(m,v, 6 , 5);
 
     /*
     VERTICE* g = (VERTICE*) malloc(v * sizeof(VERTICE));
@@ -140,7 +176,9 @@ int main(){
     g = matrizParaLista(m,v);
     imprimirGrafoLA(g,v);
     */
-
-
+    int* vetorFlags = (int*) malloc(sizeof(int));
+    zerarFlags(vetorFlags,v);
+    prof(m,v,1,vetorFlags);
+    imprimirFlags(vetorFlags,v);
 
 }
