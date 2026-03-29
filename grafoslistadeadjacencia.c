@@ -158,6 +158,58 @@ void imprimirFlags(VERTICE* g, int v){
     }
 }
 
+//Problema: Encontre o maior grupo de elementos conectados
+//em grafo não dirigido e retornar um de seus vértices
+
+Bool profMaiorGrupo(VERTICE* g, int v, int a, int* cont){ 
+    if(!g)
+        return FALSE;
+
+    g[a].flag = 1;
+
+    No* p = g[a].inicio;
+
+    while(p){  
+        if(g[p->adj].flag == 0){
+            profMaiorGrupo(g,v,p->adj, cont);
+            (*cont)++;
+        }
+        p = p->prox;
+    }
+    g[a].flag = 2;
+    return TRUE;
+}
+
+int verticeMaiorGrupo(VERTICE* g, int v){
+    if(!g)
+        return -1;
+
+    int verticeMaiorGrupo = -1;
+    int numGrupo = -1;
+    int contadorVertices = 1;
+    int maiorContadorVertice = -1;
+
+    for(int i = 0; i < v; i++){
+        if(g[i].flag == 0){
+            numGrupo++;
+            profMaiorGrupo(g,v,i,&contadorVertices);
+            printf("Grupo %d: %d\n",numGrupo,contadorVertices);
+
+            if(contadorVertices > maiorContadorVertice){
+                verticeMaiorGrupo = i;
+                maiorContadorVertice = contadorVertices;
+            }
+
+
+            contadorVertices = 1;
+        }
+    }
+
+    return verticeMaiorGrupo;
+}
+
+
+
 //Função da busca em profundidade em listas de adjacência a partir de um vértice "a"
 Bool prof(VERTICE* g, int v, int a){
     if(!g)
@@ -176,42 +228,27 @@ Bool prof(VERTICE* g, int v, int a){
 int main(){
     int v = 8;
     VERTICE* g = (VERTICE*) malloc(v * sizeof(VERTICE));
-    VERTICE* gt = (VERTICE*)malloc(v * sizeof(VERTICE));
 
     inicializarGrafo(g, v);
-    //adicionarAresta(g, x, y);
-    //removerAresta(g, x, y);
-    //imprimirGrafo(g, v);
 
-    adicionarAresta(g, 0 , 1);
-    adicionarAresta(g, 0 , 3);
-    adicionarAresta(g, 1 , 3);
-    adicionarAresta(g, 2 , 3);
+    adicionarAresta(g, 1 , 2);
     adicionarAresta(g, 2 , 1);
-    adicionarAresta(g, 2 , 7);
     adicionarAresta(g, 3 , 4);
-    adicionarAresta(g, 4 , 2);
-    adicionarAresta(g, 5 , 6);
-    adicionarAresta(g, 6 , 5);
+    adicionarAresta(g, 4 , 3);
+    adicionarAresta(g, 4 , 5);
+    adicionarAresta(g, 5 , 4);
+    adicionarAresta(g, 6 , 1);
+    adicionarAresta(g, 1 , 6);
+    adicionarAresta(g, 6 , 7);
+    adicionarAresta(g, 7 , 6);
 
     imprimirGrafo(g, v);
 
     printf("\n\n");
+    zerarFlags(g,v);
+    int i = verticeMaiorGrupo(g,v);
+    printf("Indice do vertice no maior grupo : %d", i);
 
-    //gt = grafoTransposto(g, v);
-    //imprimirGrafo(gt,v);
-
-    /*
-    int** m = (int**) malloc(v * sizeof(int*));
-    for(int i = 0; i < v; i++){
-        m[i] = (int*) malloc (v *sizeof(int));
-    }
-    m = listaParaMatriz(g,v);
-    imprimirGrafoM(m,v);
-    */
-   zerarFlags(g,v);
-   prof(g,v,0);
-   imprimirFlags(g,v);
    
 
     return 0;
