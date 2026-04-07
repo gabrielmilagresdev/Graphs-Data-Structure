@@ -5,6 +5,7 @@ typedef int Bool;
 
 #define TRUE 1
 #define FALSE 0
+#define INFINITY 2000000000
 
 //Struct da lista de adjacência (Para a função de conversão entre as estruturas)
 typedef struct s{
@@ -254,6 +255,46 @@ void custo(int** m, int v, int i, int* custos){
         }
         flag[j] = 2;
     }
+}
+
+//Algoritmo de Dijkstra
+void dijkstra(int** m, int v, int i, int* custos, int* flags, int* vias){
+    if(!m)
+        return;
+
+    for(int j = 0; j < v; j++){
+        custos[j] = INFINITY;
+        flags[j] = 0;
+        vias[j] = -1;
+    }
+    custos[i] = 0;
+
+    while(TRUE){
+        int s = -1;
+        int s_custo = INFINITY;
+        for(int j = 0; j < v; j++){
+            if(flags[j] == 0 && custos[j] < s_custo){
+                s = j;
+                s_custo = custos[j];
+            }
+        }
+
+        if(s == -1)
+            return;
+
+        flags[s] = 1;
+
+        for(int j = 0; j < v; j++){
+            if(m[s][j] != 0){
+                int temp = custos[s] + m[s][j];
+                if(temp < custos[j]){
+                    custos[j] = temp;
+                    vias[j] = s;
+                }
+            }
+        }
+    }
+
 }
 
 int main(){

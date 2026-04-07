@@ -37,6 +37,20 @@ typedef struct{
     int dist;
 }VERTICE_DIST;
 
+typedef struct s{
+    int adj
+    struct s* prox;
+    int peso;
+}No_ponderado;
+
+typedef struct{
+    No* inicio;
+    int p;
+    int custo;
+    int via;
+
+}VERTICE_Dijskstra;
+
 //Função para imprimir um grafo em matriz (Usada para a função de conversão)
 void imprimirGrafoM(int **m, int v){
     for(int i = 0; i < v; i++){
@@ -620,6 +634,47 @@ No* viaVertices(VERTICE_DIST* g, int v, int v1, int v2){
 
     
     return caminho;
+}
+
+//Algoritmo de Dijkstra
+void dijkstra(VERTICE_Dijkstra* g, int v, int i){
+    if(!g)
+        return;
+
+    for(int j = 0; j < v; j++){
+        g[j].custo = INFINITY;
+        g[j].via = -1;
+        g[j].p = 0;
+    }
+
+    g[i].custo = 0;
+
+    while(TRUE){
+        int s = -1;
+        int s_custo = INFINITY;
+
+        for(int j = 0; j < v; j++){
+            if(g[j].p == 0 && g[j].custo < s_custo){
+                s = j;
+                s_custo = g[j].custo;
+            }
+        }
+
+        if(s = -1)
+            return;
+
+        g[s].p = 1;
+        No_ponderado* p = g[s].inicio;
+
+        while(p){
+            int temp = g[s].custo + p->peso;
+            if(temp < g[p->adj].custo){
+                g[p->adj].custo = temp;
+                g[p->adj].via = s;
+            }
+            p = p->prox;
+        }
+    }
 }
 
 //Main
